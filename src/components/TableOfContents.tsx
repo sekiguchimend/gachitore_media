@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { PortableTextBlock } from "@/lib/types";
 
 interface TocItem {
   _key: string;
@@ -9,12 +10,7 @@ interface TocItem {
 }
 
 interface TableOfContentsProps {
-  body: Array<{
-    _key: string;
-    _type: string;
-    style?: string;
-    children?: Array<{ text: string }>;
-  }>;
+  body: PortableTextBlock[];
 }
 
 export function TableOfContents({ body }: TableOfContentsProps) {
@@ -27,7 +23,11 @@ export function TableOfContents({ body }: TableOfContentsProps) {
       .map((block) => ({
         _key: block._key,
         style: block.style || "h2",
-        text: block.children?.map((child) => child.text).join("") || "",
+        text:
+          block.children
+            ?.map((child) => child.text)
+            .filter((t): t is string => typeof t === "string" && t.length > 0)
+            .join("") || "",
       }));
   }, [body]);
 

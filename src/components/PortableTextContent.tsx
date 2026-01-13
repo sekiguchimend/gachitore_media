@@ -13,7 +13,7 @@ const createHeadingComponent = (
   Tag: "h2" | "h3" | "h4",
   className: string
 ) => {
-  const HeadingComponent = ({ children, value }: { children: React.ReactNode; value?: { _key?: string } }) => (
+  const HeadingComponent = ({ children, value }: { children?: React.ReactNode; value?: { _key?: string } }) => (
     <Tag id={value?._key} className={className}>
       {children}
     </Tag>

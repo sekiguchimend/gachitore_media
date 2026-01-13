@@ -48,7 +48,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   if (query.trim()) {
     posts = await sanityFetch<Post[]>({
       query: SEARCH_POSTS_QUERY,
-      params: { query: query.trim() },
+      params: { query: query.trim() } as Record<string, string>,
       // 検索はクエリの種類が多くキャッシュが肥大化しやすいので、基本はキャッシュしない
       revalidate: 0,
       tags: ["post"],
