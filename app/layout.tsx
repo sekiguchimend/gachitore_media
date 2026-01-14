@@ -25,6 +25,13 @@ export const metadata: Metadata = {
   },
   description: DEFAULT_DESCRIPTION,
   keywords: [...DEFAULT_KEYWORDS],
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    shortcut: [{ url: "/favicon.ico" }],
+  },
   openGraph: {
     type: "website",
     locale: "ja_JP",
