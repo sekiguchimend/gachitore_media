@@ -11,7 +11,7 @@ import { DEFAULT_DESCRIPTION, SITE_NAME, absoluteUrl, canonicalFrom } from "@/li
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "ホーム",
+  title: { absolute: "ガチトレ" },
   description: DEFAULT_DESCRIPTION,
   alternates: {
     canonical: canonicalFrom("/"),
@@ -19,14 +19,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: absoluteUrl("/"),
-    title: "gachitore | ガチトレメディア",
+    title: "ガチトレ",
     description: DEFAULT_DESCRIPTION,
     siteName: SITE_NAME,
     locale: "ja_JP",
   },
   twitter: {
     card: "summary_large_image",
-    title: "gachitore | ガチトレメディア",
+    title: "ガチトレ",
     description: DEFAULT_DESCRIPTION,
   },
 };

@@ -1,5 +1,5 @@
-export const SITE_NAME = "gachitore";
-export const DEFAULT_TITLE = "gachitore | ガチトレメディア";
+export const SITE_NAME = "ガチトレ";
+export const DEFAULT_TITLE = "ガチトレ";
 export const DEFAULT_DESCRIPTION =
   "本気で鍛えたいあなたへ。トレーニング・フィットネスに関する最新情報をお届けするメディアサイト";
 export const DEFAULT_KEYWORDS = ["トレーニング", "フィットネス", "筋トレ", "ワークアウト", "健康"] as const;

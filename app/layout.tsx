@@ -20,34 +20,31 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "gachitore | ガチトレメディア",
-    template: "%s | gachitore",
+    default: "ガチトレ",
+    template: "%s | ガチトレ",
   },
   description: DEFAULT_DESCRIPTION,
   keywords: [...DEFAULT_KEYWORDS],
   icons: {
-    icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon.png", type: "image/png" },
-    ],
-    shortcut: [{ url: "/favicon.ico" }],
+    icon: [{ url: "/favicon.png", type: "image/png" }],
+    shortcut: [{ url: "/favicon.png", type: "image/png" }],
   },
   openGraph: {
     type: "website",
     locale: "ja_JP",
     siteName: SITE_NAME,
     url: absoluteUrl("/"),
-    title: "gachitore | ガチトレメディア",
+    title: "ガチトレ",
     description: DEFAULT_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "gachitore | ガチトレメディア",
+    title: "ガチトレ",
     description: DEFAULT_DESCRIPTION,
   },
   alternates: {
     types: {
-      "application/rss+xml": [{ url: "/rss.xml", title: "gachitore RSS" }],
+      "application/rss+xml": [{ url: "/rss.xml", title: "ガチトレ RSS" }],
     },
   },
   robots: {
