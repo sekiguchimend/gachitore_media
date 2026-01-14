@@ -8,22 +8,22 @@ import { jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "カテゴリー一覧",
-  description: "記事カテゴリー一覧",
+  description: "トレーニング・フィットネスに関する記事カテゴリー一覧です。",
   alternates: {
     canonical: canonicalFrom("/categories"),
   },
   openGraph: {
     type: "website",
     url: absoluteUrl("/categories"),
-    title: "カテゴリー一覧 | gachitore",
-    description: "記事カテゴリー一覧",
+    title: `カテゴリー一覧 | ${SITE_NAME}`,
+    description: "トレーニング・フィットネスに関する記事カテゴリー一覧です。",
     siteName: SITE_NAME,
     locale: "ja_JP",
   },
   twitter: {
     card: "summary_large_image",
-    title: "カテゴリー一覧 | gachitore",
-    description: "記事カテゴリー一覧",
+    title: `カテゴリー一覧 | ${SITE_NAME}`,
+    description: "トレーニング・フィットネスに関する記事カテゴリー一覧です。",
   },
 };
 

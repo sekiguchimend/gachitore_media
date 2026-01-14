@@ -34,14 +34,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: "website",
       url: absoluteUrl(`/categories/${slug}`),
-      title: `${category.title}の記事一覧 | gachitore`,
+      title: `${category.title}の記事一覧 | ${SITE_NAME}`,
       description: category.description || `${category.title}に関する記事一覧`,
       siteName: SITE_NAME,
       locale: "ja_JP",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${category.title}の記事一覧 | gachitore`,
+      title: `${category.title}の記事一覧 | ${SITE_NAME}`,
       description: category.description || `${category.title}に関する記事一覧`,
     },
   };

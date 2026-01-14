@@ -1,18 +1,17 @@
 // アプリプロモーション設定
 export const APP_PROMO = {
   name: "ガチトレ",
-  tagline: "筋トレ記録アプリ",
+  tagline: "本気のトレーニングアプリ",
   description:
-    "本格的な筋トレを記録・管理できる無料アプリ。トレーニングメニューの作成、セット数・重量の記録、進捗グラフで成長を可視化。",
+    "AIに何でも質問できる筋トレ・食事記録アプリ。他のユーザーと交流しながら、みんなのトレーニング頻度や強度も参考にできる。",
   features: [
-    "100種類以上のトレーニング",
-    "進捗グラフで成長を確認",
-    "完全無料で使える",
+    "AIに筋トレ・食事の質問ができる",
+    "トレーニングと食事を簡単記録",
+    "他のユーザーと交流・情報共有",
+    "みんなの頻度・強度を参考にできる",
   ],
-  links: {
-    appStore: "https://apps.apple.com",
-    googlePlay: "https://play.google.com",
-  },
+  comingSoon: true,
+  preRegisterUrl: "/pre-register",
 } as const;
 
 export type AppPromoConfig = typeof APP_PROMO;

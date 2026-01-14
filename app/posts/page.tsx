@@ -29,12 +29,12 @@ export async function generateMetadata({ searchParams }: PostsPageProps): Promis
     openGraph: {
       type: "website",
       url: absoluteUrl(`/posts${search ? `?${search}` : ""}`),
-      title: `${title} | gachitore`,
+      title: `${title} | ${SITE_NAME}`,
       description,
       siteName: SITE_NAME,
       locale: "ja_JP",
     },
-    twitter: { card: "summary_large_image", title: `${title} | gachitore`, description },
+    twitter: { card: "summary_large_image", title: `${title} | ${SITE_NAME}`, description },
   };
 }
 
