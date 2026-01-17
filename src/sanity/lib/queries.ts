@@ -2,10 +2,13 @@ import { defineQuery } from "next-sanity";
 
 // 画像フラグメント
 const imageFragment = /* groq */ `
-  asset->{
-    _id,
-    url,
-    metadata { lqip, dimensions }
+  asset {
+    _ref,
+    ...@->{
+      _id,
+      url,
+      metadata { lqip, dimensions }
+    }
   },
   alt
 `;

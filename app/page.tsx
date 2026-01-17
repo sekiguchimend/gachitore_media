@@ -115,6 +115,11 @@ export default async function HomePage() {
   const { featured: featuredPosts, latest: latestPosts, categories } = data;
   const heroPost = featuredPosts?.[0];
 
+  // デバッグ: 全フィールド確認
+  console.log("=== 画像デバッグ ===");
+  console.log("latest posts[0] 全データ:", JSON.stringify(latestPosts?.[0], null, 2));
+  console.log("===================");
+
   return (
     <div className="bg-black min-h-screen grid-bg">
       {/* Hero Banner */}
