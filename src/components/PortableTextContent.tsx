@@ -265,9 +265,24 @@ const isTableRow = (text: string): boolean => {
   return /^\|.*\|$/.test(trimmed) || /^\|[\s\-:|]+\|$/.test(trimmed);
 };
 
+// マージされたテーブルブロックの型
+type MergedTableBlock = {
+  _type: "mergedTable";
+  _key: string;
+  content: string;
+};
+
+// 処理済みブロックの型
+type ProcessedBlock = PortableTextBlock | MergedTableBlock;
+
+// 型ガード関数
+const isMergedTable = (block: ProcessedBlock): block is MergedTableBlock => {
+  return block._type === "mergedTable";
+};
+
 // 連続するテーブル行を結合したvalueを生成
-const preprocessBlocks = (blocks: PortableTextBlock[]): (PortableTextBlock | { _type: "mergedTable"; _key: string; content: string })[] => {
-  const result: (PortableTextBlock | { _type: "mergedTable"; _key: string; content: string })[] = [];
+const preprocessBlocks = (blocks: PortableTextBlock[]): ProcessedBlock[] => {
+  const result: ProcessedBlock[] = [];
   let i = 0;
 
   while (i < blocks.length) {
@@ -319,7 +334,7 @@ export function PortableTextContent({ value }: PortableTextContentProps) {
   return (
     <div className="prose">
       {processedBlocks.map((block) => {
-        if (block._type === "mergedTable") {
+        if (isMergedTable(block)) {
           return (
             <div key={block._key} className="my-8 overflow-x-auto rounded-lg border border-[#2a2a2a] shadow-lg shadow-black/20">
               <ReactMarkdown
