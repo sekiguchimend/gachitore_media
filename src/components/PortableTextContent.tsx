@@ -134,15 +134,15 @@ const components: PortableTextComponents = {
       const [headerRow, ...bodyRows] = value.rows;
 
       return (
-        <div className="my-6 overflow-x-auto">
-          <table className="min-w-full border-collapse border border-[var(--border-default)]">
+        <div className="my-8 overflow-x-auto rounded-lg border border-[#2a2a2a] shadow-lg shadow-black/20">
+          <table className="min-w-full">
             {headerRow && (
               <thead>
-                <tr className="bg-[var(--bg-elevated)]">
+                <tr className="bg-gradient-to-r from-[#00ff88] to-[#00cc6a]">
                   {headerRow.cells?.map((cell: string, cellIndex: number) => (
                     <th
                       key={cellIndex}
-                      className="border border-[var(--border-default)] px-4 py-2 text-left font-semibold text-[var(--text-primary)]"
+                      className="px-5 py-3.5 text-left text-sm font-bold text-black uppercase tracking-wider first:rounded-tl-lg last:rounded-tr-lg"
                     >
                       {cell}
                     </th>
@@ -150,16 +150,16 @@ const components: PortableTextComponents = {
                 </tr>
               </thead>
             )}
-            <tbody>
+            <tbody className="divide-y divide-[#2a2a2a]">
               {bodyRows.map((row: { cells?: string[] }, rowIndex: number) => (
                 <tr
                   key={rowIndex}
-                  className={rowIndex % 2 === 0 ? "bg-[var(--bg-primary)]" : "bg-[var(--bg-secondary)]"}
+                  className={`${rowIndex % 2 === 0 ? "bg-[#0a0a0a]" : "bg-[#111]"} hover:bg-[#1a1a1a] transition-colors`}
                 >
                   {row.cells?.map((cell: string, cellIndex: number) => (
                     <td
                       key={cellIndex}
-                      className="border border-[var(--border-default)] px-4 py-2 text-[var(--text-secondary)]"
+                      className="px-5 py-4 text-sm text-[#ccc]"
                     >
                       {cell}
                     </td>
@@ -180,27 +180,30 @@ const components: PortableTextComponents = {
             remarkPlugins={[remarkGfm]}
             components={{
               table: ({ children }) => (
-                <div className="overflow-x-auto my-4">
-                  <table className="min-w-full border-collapse border border-[var(--border-default)]">
+                <div className="overflow-x-auto my-8 rounded-lg border border-[#2a2a2a] shadow-lg shadow-black/20">
+                  <table className="min-w-full">
                     {children}
                   </table>
                 </div>
               ),
               thead: ({ children }) => (
-                <thead className="bg-[var(--bg-elevated)]">{children}</thead>
+                <thead className="bg-gradient-to-r from-[#00ff88] to-[#00cc6a] [&>tr]:bg-transparent">{children}</thead>
+              ),
+              tbody: ({ children }) => (
+                <tbody className="[&>tr:nth-child(even)]:bg-[#111] [&>tr:nth-child(odd)]:bg-[#0a0a0a] [&>tr:hover]:bg-[#1a1a1a]">{children}</tbody>
               ),
               th: ({ children }) => (
-                <th className="border border-[var(--border-default)] px-4 py-2 text-left font-semibold text-[var(--text-primary)]">
+                <th className="px-5 py-3.5 text-left text-sm font-bold text-black uppercase tracking-wider first:rounded-tl-lg last:rounded-tr-lg">
                   {children}
                 </th>
               ),
               td: ({ children }) => (
-                <td className="border border-[var(--border-default)] px-4 py-2 text-[var(--text-secondary)]">
+                <td className="px-5 py-4 text-sm text-[#ccc] border-t border-[#2a2a2a]">
                   {children}
                 </td>
               ),
               tr: ({ children }) => (
-                <tr className="even:bg-[var(--bg-secondary)]">{children}</tr>
+                <tr className="transition-colors">{children}</tr>
               ),
               p: ({ children }) => (
                 <p className="text-[var(--text-secondary)] leading-relaxed mb-4">{children}</p>
@@ -247,12 +250,122 @@ const components: PortableTextComponents = {
   },
 };
 
+// ブロックからテキストを抽出するヘルパー関数
+const getBlockText = (block: PortableTextBlock): string => {
+  if (block._type !== "block" || !block.children) return "";
+  return block.children
+    .filter((child) => child._type === "span" && child.text)
+    .map((child) => child.text || "")
+    .join("");
+};
+
+// テーブル行かどうかを判定（|で始まり|で終わる、または|---|のようなセパレータ）
+const isTableRow = (text: string): boolean => {
+  const trimmed = text.trim();
+  return /^\|.*\|$/.test(trimmed) || /^\|[\s\-:|]+\|$/.test(trimmed);
+};
+
+// 連続するテーブル行を結合したvalueを生成
+const preprocessBlocks = (blocks: PortableTextBlock[]): (PortableTextBlock | { _type: "mergedTable"; _key: string; content: string })[] => {
+  const result: (PortableTextBlock | { _type: "mergedTable"; _key: string; content: string })[] = [];
+  let i = 0;
+
+  while (i < blocks.length) {
+    const block = blocks[i];
+    const blockText = getBlockText(block);
+
+    // テーブル行の場合、連続するテーブル行をすべて収集
+    if (block._type === "block" && isTableRow(blockText)) {
+      const tableLines: string[] = [blockText];
+      let j = i + 1;
+
+      while (j < blocks.length) {
+        const nextBlock = blocks[j];
+        const nextText = getBlockText(nextBlock);
+        if (nextBlock._type === "block" && isTableRow(nextText)) {
+          tableLines.push(nextText);
+          j++;
+        } else {
+          break;
+        }
+      }
+
+      // 2行以上ある場合はテーブルとして結合
+      if (tableLines.length >= 2) {
+        result.push({
+          _type: "mergedTable",
+          _key: block._key + "_merged",
+          content: tableLines.join("\n"),
+        });
+        i = j;
+        continue;
+      }
+    }
+
+    result.push(block);
+    i++;
+  }
+
+  return result;
+};
+
 export function PortableTextContent({ value }: PortableTextContentProps) {
   if (!value || !Array.isArray(value)) return null;
-  
+
+  // 連続するテーブル行を前処理で結合
+  const processedBlocks = preprocessBlocks(value);
+
+  // カスタムレンダリング：mergedTableは特別に処理
   return (
     <div className="prose">
-      <PortableText value={value} components={components} />
+      {processedBlocks.map((block) => {
+        if (block._type === "mergedTable") {
+          return (
+            <div key={block._key} className="my-8 overflow-x-auto rounded-lg border border-[#2a2a2a] shadow-lg shadow-black/20">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  table: ({ children }) => (
+                    <table className="min-w-full">
+                      {children}
+                    </table>
+                  ),
+                  thead: ({ children }) => (
+                    <thead className="bg-gradient-to-r from-[#00ff88] to-[#00cc6a] [&>tr]:bg-transparent">{children}</thead>
+                  ),
+                  tbody: ({ children }) => (
+                    <tbody className="[&>tr:nth-child(even)]:bg-[#111] [&>tr:nth-child(odd)]:bg-[#0a0a0a] [&>tr:hover]:bg-[#1a1a1a]">{children}</tbody>
+                  ),
+                  th: ({ children }) => (
+                    <th className="px-5 py-3.5 text-left text-sm font-bold text-black uppercase tracking-wider first:rounded-tl-lg last:rounded-tr-lg">
+                      {children}
+                    </th>
+                  ),
+                  td: ({ children }) => (
+                    <td className="px-5 py-4 text-sm text-[#ccc] border-t border-[#2a2a2a]">
+                      {children}
+                    </td>
+                  ),
+                  tr: ({ children }) => (
+                    <tr className="transition-colors">{children}</tr>
+                  ),
+                }}
+              >
+                {block.content}
+              </ReactMarkdown>
+            </div>
+          );
+        }
+
+        // 通常のブロックはPortableTextでレンダリング
+        return (
+          <PortableText
+            key={block._key}
+            value={[block as PortableTextBlock]}
+            components={components}
+          />
+        );
+      })}
     </div>
   );
 }
