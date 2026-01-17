@@ -121,6 +121,30 @@ export const post = defineType({
           type: "table",
           title: "テーブル",
         }),
+        defineArrayMember({
+          type: "object",
+          name: "markdown",
+          title: "マークダウン",
+          fields: [
+            defineField({
+              name: "content",
+              title: "マークダウンコンテンツ",
+              type: "text",
+              description: "Markdown形式で記述できます（テーブル、リストなど）",
+            }),
+          ],
+          preview: {
+            select: {
+              content: "content",
+            },
+            prepare({ content }) {
+              return {
+                title: "マークダウン",
+                subtitle: content ? content.substring(0, 50) + "..." : "",
+              };
+            },
+          },
+        }),
       ],
     }),
     defineField({

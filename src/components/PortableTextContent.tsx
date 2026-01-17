@@ -1,6 +1,8 @@
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import Image from "next/image";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { urlFor } from "@/sanity/lib/image";
 import type { PortableTextBlock } from "@/lib/types";
 
@@ -166,6 +168,79 @@ const components: PortableTextComponents = {
               ))}
             </tbody>
           </table>
+        </div>
+      );
+    },
+    markdown: ({ value }) => {
+      if (!value?.content) return null;
+
+      return (
+        <div className="my-6 markdown-content">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              table: ({ children }) => (
+                <div className="overflow-x-auto my-4">
+                  <table className="min-w-full border-collapse border border-[var(--border-default)]">
+                    {children}
+                  </table>
+                </div>
+              ),
+              thead: ({ children }) => (
+                <thead className="bg-[var(--bg-elevated)]">{children}</thead>
+              ),
+              th: ({ children }) => (
+                <th className="border border-[var(--border-default)] px-4 py-2 text-left font-semibold text-[var(--text-primary)]">
+                  {children}
+                </th>
+              ),
+              td: ({ children }) => (
+                <td className="border border-[var(--border-default)] px-4 py-2 text-[var(--text-secondary)]">
+                  {children}
+                </td>
+              ),
+              tr: ({ children }) => (
+                <tr className="even:bg-[var(--bg-secondary)]">{children}</tr>
+              ),
+              p: ({ children }) => (
+                <p className="text-[var(--text-secondary)] leading-relaxed mb-4">{children}</p>
+              ),
+              a: ({ children, href }) => (
+                <a
+                  href={href}
+                  className="text-[var(--accent-primary)] hover:text-[var(--accent-secondary)] underline underline-offset-2 transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {children}
+                </a>
+              ),
+              ul: ({ children }) => (
+                <ul className="list-disc list-inside my-4 space-y-2 text-[var(--text-secondary)] pl-4">
+                  {children}
+                </ul>
+              ),
+              ol: ({ children }) => (
+                <ol className="list-decimal list-inside my-4 space-y-2 text-[var(--text-secondary)] pl-4">
+                  {children}
+                </ol>
+              ),
+              li: ({ children }) => (
+                <li className="pl-2">{children}</li>
+              ),
+              strong: ({ children }) => (
+                <strong className="font-semibold text-[var(--text-primary)]">{children}</strong>
+              ),
+              em: ({ children }) => <em className="italic">{children}</em>,
+              code: ({ children }) => (
+                <code className="bg-[var(--bg-elevated)] px-1.5 py-0.5 rounded text-sm font-mono text-[var(--accent-primary)]">
+                  {children}
+                </code>
+              ),
+            }}
+          >
+            {value.content}
+          </ReactMarkdown>
         </div>
       );
     },
