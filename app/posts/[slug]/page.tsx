@@ -155,14 +155,14 @@ export default async function PostPage({ params }: Props) {
 
       <div className="container">
         {/* Breadcrumb */}
-        <div className={post.mainImage?.asset?.url ? "pt-4" : "pt-20"}>
+        <div className={post.mainImage?.asset?.url ? "pt-6" : "pt-20"}>
           <nav aria-label="パンくずリスト">
             <Breadcrumb items={breadcrumbItems} />
           </nav>
         </div>
 
         {/* Header */}
-        <header className={`relative ${post.mainImage?.asset?.url ? "-mt-28 md:-mt-36" : ""} mb-8`}>
+        <header className={`relative ${post.mainImage?.asset?.url ? "mt-6" : ""} mb-8`}>
           <div className="max-w-3xl">
             {/* Category */}
             {post.categories?.[0] && (

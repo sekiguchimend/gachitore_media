@@ -1,3 +1,4 @@
+import React from "react";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,9 +39,122 @@ const components: PortableTextComponents = {
       "h4",
       "text-lg font-semibold text-[var(--text-primary)] mt-6 mb-2 scroll-mt-24"
     ),
-    normal: ({ children }) => (
-      <p className="text-[var(--text-secondary)] leading-relaxed mb-5">{children}</p>
-    ),
+    normal: ({ children }) => {
+      // childrenからテキストを抽出
+      const extractText = (nodes: React.ReactNode): string => {
+        let text = "";
+        React.Children.forEach(nodes, (child) => {
+          if (typeof child === "string") {
+            text += child;
+          } else if (React.isValidElement(child) && child.props.children) {
+            text += extractText(child.props.children);
+          }
+        });
+        return text;
+      };
+
+      const text = extractText(children);
+
+      // 1行形式のマークダウンテーブルを検出（| header | | :--- | | data |）
+      const isInlineTable = (str: string): boolean => {
+        return str.includes("|") && 
+               (str.includes("| :---") || str.includes("| ---") || str.includes("|:---") || str.includes("|---")) &&
+               (str.match(/\|/g) || []).length >= 6;
+      };
+
+      // 1行形式のテーブルを複数行に変換
+      const convertInlineTable = (str: string): string => {
+        // | で区切られた部分を行に分割
+        // パターン: | col | col | | :--- | :--- | | data | data |
+        const parts = str.split(/\s*\|\s*/).filter(p => p.trim());
+        
+        // セパレータ行（:--- や ---）の位置を探す
+        let separatorIndex = -1;
+        for (let i = 0; i < parts.length; i++) {
+          if (/^:?-+:?$/.test(parts[i].trim())) {
+            separatorIndex = i;
+            break;
+          }
+        }
+
+        if (separatorIndex === -1) return str;
+
+        // ヘッダーの列数を推測
+        const colCount = separatorIndex;
+        if (colCount === 0) return str;
+
+        // 行を構築
+        const rows: string[] = [];
+        for (let i = 0; i < parts.length; i += colCount) {
+          const rowParts = parts.slice(i, i + colCount);
+          if (rowParts.length === colCount) {
+            rows.push("| " + rowParts.join(" | ") + " |");
+          }
+        }
+
+        return rows.join("\n");
+      };
+
+      // テーブルの場合はReactMarkdownでレンダリング
+      if (isInlineTable(text)) {
+        const tableMarkdown = convertInlineTable(text);
+        return (
+          <div className="my-8 overflow-x-auto rounded-lg border border-[#2a2a2a] shadow-lg shadow-black/20">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                table: ({ children }) => (
+                  <table className="min-w-full">{children}</table>
+                ),
+                thead: ({ children }) => (
+                  <thead className="bg-gradient-to-r from-[#00ff88] to-[#00cc6a] [&>tr]:bg-transparent">{children}</thead>
+                ),
+                tbody: ({ children }) => (
+                  <tbody className="[&>tr:nth-child(even)]:bg-[#111] [&>tr:nth-child(odd)]:bg-[#0a0a0a] [&>tr:hover]:bg-[#1a1a1a]">{children}</tbody>
+                ),
+                th: ({ children }) => (
+                  <th className="px-5 py-3.5 text-left text-sm font-bold text-black uppercase tracking-wider">{children}</th>
+                ),
+                td: ({ children }) => (
+                  <td className="px-5 py-4 text-sm text-[#ccc] border-t border-[#2a2a2a]">{children}</td>
+                ),
+                tr: ({ children }) => (
+                  <tr className="transition-colors">{children}</tr>
+                ),
+              }}
+            >
+              {tableMarkdown}
+            </ReactMarkdown>
+          </div>
+        );
+      }
+
+      // childrenを処理してアスタリスクマークを太字に変換
+      const processChildren = (nodes: React.ReactNode): React.ReactNode => {
+        return React.Children.map(nodes, (child) => {
+          if (typeof child === "string") {
+            // **text** または *text* を太字に変換
+            const parts = child.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+            return parts.map((part, index) => {
+              if (part.startsWith("**") && part.endsWith("**")) {
+                return <strong key={index} className="font-semibold text-[var(--text-primary)]">{part.slice(2, -2)}</strong>;
+              }
+              if (part.startsWith("*") && part.endsWith("*") && part.length > 2) {
+                return <strong key={index} className="font-semibold text-[var(--text-primary)]">{part.slice(1, -1)}</strong>;
+              }
+              return part;
+            });
+          }
+          return child;
+        });
+      };
+
+      return (
+        <p className="text-[var(--text-secondary)] leading-relaxed mb-5">
+          {processChildren(children)}
+        </p>
+      );
+    },
     blockquote: ({ children }) => (
       <blockquote className="border-l-4 border-[var(--accent-primary)] pl-4 my-6 text-[var(--text-tertiary)] italic">
         {children}
