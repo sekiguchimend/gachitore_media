@@ -106,7 +106,7 @@ const components: PortableTextComponents = {
   types: {
     image: ({ value }) => {
       if (!value?.asset) return null;
-      
+
       return (
         <figure className="my-8">
           <div className="relative aspect-video rounded-lg overflow-hidden">
@@ -124,6 +124,49 @@ const components: PortableTextComponents = {
             </figcaption>
           )}
         </figure>
+      );
+    },
+    table: ({ value }) => {
+      if (!value?.rows || value.rows.length === 0) return null;
+
+      const [headerRow, ...bodyRows] = value.rows;
+
+      return (
+        <div className="my-6 overflow-x-auto">
+          <table className="min-w-full border-collapse border border-[var(--border-default)]">
+            {headerRow && (
+              <thead>
+                <tr className="bg-[var(--bg-elevated)]">
+                  {headerRow.cells?.map((cell: string, cellIndex: number) => (
+                    <th
+                      key={cellIndex}
+                      className="border border-[var(--border-default)] px-4 py-2 text-left font-semibold text-[var(--text-primary)]"
+                    >
+                      {cell}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {bodyRows.map((row: { cells?: string[] }, rowIndex: number) => (
+                <tr
+                  key={rowIndex}
+                  className={rowIndex % 2 === 0 ? "bg-[var(--bg-primary)]" : "bg-[var(--bg-secondary)]"}
+                >
+                  {row.cells?.map((cell: string, cellIndex: number) => (
+                    <td
+                      key={cellIndex}
+                      className="border border-[var(--border-default)] px-4 py-2 text-[var(--text-secondary)]"
+                    >
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       );
     },
   },

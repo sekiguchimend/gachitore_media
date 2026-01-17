@@ -117,6 +117,10 @@ export const post = defineType({
             }),
           ],
         }),
+        defineArrayMember({
+          type: "table",
+          title: "テーブル",
+        }),
       ],
     }),
     defineField({
