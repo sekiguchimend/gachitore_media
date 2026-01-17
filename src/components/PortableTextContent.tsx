@@ -46,8 +46,11 @@ const components: PortableTextComponents = {
         React.Children.forEach(nodes, (child) => {
           if (typeof child === "string") {
             text += child;
-          } else if (React.isValidElement(child) && child.props.children) {
-            text += extractText(child.props.children);
+          } else if (React.isValidElement(child)) {
+            const props = child.props as { children?: React.ReactNode };
+            if (props.children) {
+              text += extractText(props.children);
+            }
           }
         });
         return text;
