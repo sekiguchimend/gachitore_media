@@ -271,12 +271,17 @@ export default async function PostPage({ params }: Props) {
               </div>
             )}
 
-            {/* Related Posts */}
-            {post.relatedPosts && post.relatedPosts.length > 0 && (
-              <section aria-label="関連記事">
-                <RelatedPosts posts={post.relatedPosts} currentPostId={post._id} />
-              </section>
-            )}
+            {/* Related Posts - 関連記事がなければ最新記事を表示 */}
+            {(() => {
+              const postsToShow = (post.relatedPosts && post.relatedPosts.length > 0)
+                ? post.relatedPosts
+                : post.fallbackPosts;
+              return postsToShow && postsToShow.length > 0 ? (
+                <section aria-label="おすすめ記事">
+                  <RelatedPosts posts={postsToShow} currentPostId={post._id} />
+                </section>
+              ) : null;
+            })()}
 
             {/* App Promo Card - Mobile */}
             <div className="lg:hidden py-8 border-t border-[#1a1a1a]">

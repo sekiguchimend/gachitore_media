@@ -13,7 +13,7 @@ import {
 } from "./queries";
 import type { Category, Post } from "@/lib/types";
 
-export type PostWithRelated = Post & { relatedPosts?: Post[] };
+export type PostWithRelated = Post & { relatedPosts?: Post[]; fallbackPosts?: Post[] };
 
 export const getPostBySlug = cache(async (slug: string) => {
   return sanityFetch<PostWithRelated | null>({

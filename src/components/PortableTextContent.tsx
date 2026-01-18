@@ -401,6 +401,7 @@ const isMergedTable = (block: ProcessedBlock): block is MergedTableBlock => {
 const preprocessBlocks = (blocks: PortableTextBlock[]): ProcessedBlock[] => {
   const result: ProcessedBlock[] = [];
   let i = 0;
+  let mergedTableCount = 0;
 
   while (i < blocks.length) {
     const block = blocks[i];
@@ -426,7 +427,7 @@ const preprocessBlocks = (blocks: PortableTextBlock[]): ProcessedBlock[] => {
       if (tableLines.length >= 2) {
         result.push({
           _type: "mergedTable",
-          _key: block._key + "_merged",
+          _key: block._key ? `${block._key}_merged` : `merged-table-${mergedTableCount++}`,
           content: tableLines.join("\n"),
         });
         i = j;
@@ -434,7 +435,12 @@ const preprocessBlocks = (blocks: PortableTextBlock[]): ProcessedBlock[] => {
       }
     }
 
-    result.push(block);
+    // 通常ブロックでも_keyがない場合は付与
+    if (!block._key) {
+      result.push({ ...block, _key: `block-${i}` });
+    } else {
+      result.push(block);
+    }
     i++;
   }
 

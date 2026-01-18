@@ -114,7 +114,15 @@ export const POST_QUERY = defineQuery(/* groq */ `
     mainImage { ${imageFragment} },
     author->{ name, "slug": slug.current, bio, image { ${imageFragment} } },
     categories[]->{ _id, title, "slug": slug.current },
-    "relatedPosts": *[_type == "post" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(publishedAt desc)[0...4] {
+    "relatedPosts": *[_type == "post" && slug.current != $slug && count(categories[@._ref in ^.^.categories[]._ref]) > 0] | order(publishedAt desc)[0...2] {
+      _id,
+      title,
+      "slug": slug.current,
+      publishedAt,
+      mainImage { ${imageFragment} },
+      categories[]->{ title, "slug": slug.current }
+    },
+    "fallbackPosts": *[_type == "post" && slug.current != $slug] | order(publishedAt desc)[0...2] {
       _id,
       title,
       "slug": slug.current,

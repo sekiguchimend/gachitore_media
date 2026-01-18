@@ -9,15 +9,15 @@ interface RelatedPostsProps {
 }
 
 export function RelatedPosts({ posts, currentPostId }: RelatedPostsProps) {
-  // 現在の記事を除外
-  const filteredPosts = posts.filter((post) => post._id !== currentPostId).slice(0, 4);
+  // 現在の記事を除外して2件表示
+  const filteredPosts = posts.filter((post) => post._id !== currentPostId).slice(0, 2);
 
   if (filteredPosts.length === 0) return null;
 
   return (
     <section className="py-12 border-t border-[#1a1a1a]">
       <h2 className="text-sm text-[#00ff88] font-mono tracking-wider uppercase mb-6">
-        RELATED ARTICLES
+        RECOMMENDED ARTICLES
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {filteredPosts.map((post) => (

@@ -20,8 +20,8 @@ export function TableOfContents({ body }: TableOfContentsProps) {
   const headings: TocItem[] = useMemo(() => {
     return body
       .filter((block) => block._type === "block" && (block.style === "h2" || block.style === "h3"))
-      .map((block) => ({
-        _key: block._key,
+      .map((block, index) => ({
+        _key: block._key || `heading-${index}`,
         style: block.style || "h2",
         text:
           block.children
