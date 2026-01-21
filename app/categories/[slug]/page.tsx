@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${category.title}の記事一覧`,
     description: category.description || `${category.title}に関する記事一覧`,
+    robots: { index: true, follow: true },
     alternates: { canonical: canonicalFrom(`/categories/${slug}`) },
     openGraph: {
       type: "website",

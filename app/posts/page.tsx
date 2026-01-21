@@ -25,6 +25,7 @@ export async function generateMetadata({ searchParams }: PostsPageProps): Promis
   return {
     title,
     description,
+    robots: { index: true, follow: true },
     alternates: { canonical: canonicalFrom("/posts", search) },
     openGraph: {
       type: "website",

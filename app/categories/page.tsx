@@ -9,6 +9,7 @@ import { jsonLdScript } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "カテゴリー一覧",
   description: "トレーニング・フィットネスに関する記事カテゴリー一覧です。",
+  robots: { index: true, follow: true },
   alternates: {
     canonical: canonicalFrom("/categories"),
   },
