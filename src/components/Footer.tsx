@@ -25,6 +25,9 @@ export function Footer() {
             <Link href="/categories" className="text-[#666] hover:text-[#00ff88] transition-colors">
               CATEGORIES
             </Link>
+            <Link href="/contact" className="text-[#666] hover:text-[#00ff88] transition-colors">
+              CONTACT
+            </Link>
           </nav>
         </div>
       </div>

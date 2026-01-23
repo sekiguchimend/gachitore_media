@@ -40,6 +40,7 @@ export function Header() {
     { href: "/posts", label: "ARTICLES" },
     { href: "/categories", label: "CATEGORIES" },
     { href: "/about", label: "ABOUT" },
+    { href: "/contact", label: "CONTACT" },
   ];
 
   return (

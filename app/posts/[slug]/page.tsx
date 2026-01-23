@@ -248,30 +248,6 @@ export default async function PostPage({ params }: Props) {
               </nav>
             </footer>
 
-            {/* Author Bio */}
-            {post.author?.bio && (
-              <div className="py-8 border-t border-[#1a1a1a]">
-                <div className="flex items-start gap-4 p-6 bg-[#0a0a0a] border border-[#1a1a1a]">
-                  {post.author.image?.asset?.url ? (
-                    <Image
-                      src={urlFor(post.author.image).width(120).height(120).url()}
-                      alt={post.author.name}
-                      width={56}
-                      height={56}
-                      className="rounded-full flex-shrink-0"
-                    />
-                  ) : (
-                    <div className="w-14 h-14 rounded-full bg-[#1a1a1a] flex-shrink-0" />
-                  )}
-                  <div>
-                    <p className="text-[10px] text-[#666] font-mono mb-1">AUTHOR</p>
-                    <h3 className="text-lg font-semibold text-white mb-2">{post.author.name}</h3>
-                    <p className="text-sm text-[#888] leading-relaxed">{post.author.bio}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Related Posts - 関連記事がなければ最新記事を表示 */}
             {(() => {
               const postsToShow = (post.relatedPosts && post.relatedPosts.length > 0)
